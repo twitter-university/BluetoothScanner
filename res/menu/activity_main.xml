@@ -1,0 +1,5 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/item_paired_devices" android:title="@string/paired_devices"></item>
+    <item android:id="@+id/item_scan" android:title="@string/scan_for_devices"></item>
+    <item android:id="@+id/item_discoverable" android:title="@string/discoverable"></item>
+</menu>
