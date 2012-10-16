@@ -1,6 +1,6 @@
 = About This Project
 
-This Android Eclipse project demonstrates Android Binder IPC framework.
+This Android Eclipse project demonstrates Android Bluetooth API.
 
 This code was developed to support Marakana's Android Training courses.
 
