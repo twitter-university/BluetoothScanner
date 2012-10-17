@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
+	private static final String TAG = "BluetoothScanner";
 	private static final int REQUEST_ENABLE_BT = 47;
 
 	private ListView mList;
@@ -125,6 +126,7 @@ public class MainActivity extends Activity {
 		startActivity(discoverableIntent);
 	}
 
+	// --- Menu Handling callbacks ---
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.activity_main, menu);
@@ -142,6 +144,9 @@ public class MainActivity extends Activity {
 			return true;
 		case R.id.item_discoverable:
 			makeDiscoverable();
+			return true;
+		case R.id.item_chat:
+			startActivity( new Intent(this, Chat.class) );
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

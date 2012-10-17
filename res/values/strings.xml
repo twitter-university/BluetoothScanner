@@ -7,5 +7,8 @@
     <string name="paired_devices">Paired Devices</string>
     <string name="scan_for_devices">Scan for Devices</string>
     <string name="discoverable">Discoverable</string>
+    <string name="submit">Go!</string>
+    <string name="launch_chat">Launch Chat</string>
+    <string name="chat">Chat</string>
 
 </resources>
