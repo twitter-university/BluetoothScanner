@@ -21,7 +21,7 @@ public class Chat extends Activity {
 	private static final String TAG = "BluetoothScanner";
 	private static final String UUID_STRING = "665bbe80-174f-11e2-892e-0800200c9a66";
 	private static final int MESSAGE_READ = 47; // Used by handler
-	
+
 	private EditText input;
 	private TextView output;
 
@@ -32,10 +32,10 @@ public class Chat extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_chat);
-		
+
 		input = (EditText) findViewById(R.id.input);
-		output= (TextView) findViewById(R.id.output);
-		
+		output = (TextView) findViewById(R.id.output);
+
 		acceptThread = new AcceptThread();
 		acceptThread.start();
 	}
@@ -49,7 +49,8 @@ public class Chat extends Activity {
 	/** Takes the input and sends it to the server. */
 	public void onClickGo(View v) {
 		String inputString = input.getText().toString();
-		connectedThread.write(inputString.getBytes());
+		if (connectedThread != null)
+			connectedThread.write(inputString.getBytes());
 	}
 
 	private class AcceptThread extends Thread {
@@ -116,71 +117,75 @@ public class Chat extends Activity {
 		connectedThread.run();
 		Log.d(TAG, "manageConnectedSocket");
 	}
-	
+
 	private class ConnectedThread extends Thread {
-	    private final BluetoothSocket mmSocket;
-	    private final InputStream mmInStream;
-	    private final OutputStream mmOutStream;
-	 
-	    public ConnectedThread(BluetoothSocket socket) {
-	        mmSocket = socket;
-	        InputStream tmpIn = null;
-	        OutputStream tmpOut = null;
-	 
-	        // Get the input and output streams, using temp objects because
-	        // member streams are final
-	        try {
-	            tmpIn = socket.getInputStream();
-	            tmpOut = socket.getOutputStream();
-	        } catch (IOException e) { }
-	 
-	        mmInStream = tmpIn;
-	        mmOutStream = tmpOut;
-	    }
-	 
-	    public void run() {
-	        byte[] buffer = new byte[1024];  // buffer store for the stream
-	        int bytes; // bytes returned from read()
-	 
-	        // Keep listening to the InputStream until an exception occurs
-	        while (true) {
-	            try {
-	                // Read from the InputStream
-	                bytes = mmInStream.read(buffer);
-	                // Send the obtained bytes to the UI activity
-	                Message msg = mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer);
-	                mHandler.sendMessage(msg);
-	            } catch (IOException e) {
-	                break;
-	            }
-	        }
-	    }
-	 
-	    /* Call this from the main activity to send data to the remote device */
-	    public void write(byte[] bytes) {
-	        try {
-	            mmOutStream.write(bytes);
-	        } catch (IOException e) { }
-	    }
-	 
-	    /* Call this from the main activity to shutdown the connection */
-	    public void cancel() {
-	        try {
-	            mmSocket.close();
-	        } catch (IOException e) { }
-	    }
+		private final BluetoothSocket mmSocket;
+		private final InputStream mmInStream;
+		private final OutputStream mmOutStream;
+
+		public ConnectedThread(BluetoothSocket socket) {
+			mmSocket = socket;
+			InputStream tmpIn = null;
+			OutputStream tmpOut = null;
+
+			// Get the input and output streams, using temp objects because
+			// member streams are final
+			try {
+				tmpIn = socket.getInputStream();
+				tmpOut = socket.getOutputStream();
+			} catch (IOException e) {
+			}
+
+			mmInStream = tmpIn;
+			mmOutStream = tmpOut;
+		}
+
+		public void run() {
+			byte[] buffer = new byte[1024]; // buffer store for the stream
+			int bytes; // bytes returned from read()
+
+			// Keep listening to the InputStream until an exception occurs
+			while (true) {
+				try {
+					// Read from the InputStream
+					bytes = mmInStream.read(buffer);
+					// Send the obtained bytes to the UI activity
+					Message msg = mHandler.obtainMessage(MESSAGE_READ, bytes,
+							-1, buffer);
+					mHandler.sendMessage(msg);
+				} catch (IOException e) {
+					break;
+				}
+			}
+		}
+
+		/* Call this from the main activity to send data to the remote device */
+		public void write(byte[] bytes) {
+			try {
+				mmOutStream.write(bytes);
+			} catch (IOException e) {
+			}
+		}
+
+		/* Call this from the main activity to shutdown the connection */
+		public void cancel() {
+			try {
+				mmSocket.close();
+			} catch (IOException e) {
+			}
+		}
 	}
 
-	
 	/** Handle messages from the ConnectedThread. */
 	private final Handler mHandler = new Handler() {
 
 		@Override
 		public void handleMessage(Message msg) {
-			if(msg.what != MESSAGE_READ) return;
-			
+			if (msg.what != MESSAGE_READ)
+				return;
+
 			output.append("\n" + msg.obj);
 		}
-		
+
 	};
 }
